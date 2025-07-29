@@ -20,9 +20,9 @@ env = Casino()
 anzahl_banditen = len(env.bandits)
 
 # Statistik
-Besuche = [0] * anzahl_banditen
-Gewinne = [0.0] * anzahl_banditen
-DurchschnittsGewinn = [0.0] * anzahl_banditen
+Besuche = [0,0,0,0,0]
+Gewinne = [0.0,0.0,0.0,0.0,0.0]
+DurchschnittsGewinn = [0.0,0.0,0.0,0.0,0.0]
 Averages = []
 
 # === Policies ===
@@ -31,6 +31,9 @@ def random_policy(epsilon):
 
 def epsilon_greedy_policy(epsilon):
     if random() < epsilon:
+#  Exploration
+#  Wähle einen zufälligen Bandit zwischen 0 und anzahl_banditen - 1 (z. B. 0 bis 4)
+#  Das sorgt dafür, dass der Agent auch neue Banditen ausprobiert – nicht nur den „vermeintlich besten“.
         return randint(0, anzahl_banditen - 1)
     else:
         return DurchschnittsGewinn.index(max(DurchschnittsGewinn))
@@ -46,6 +49,7 @@ def train(policy_fn, epochs=1000):
 
     total_reward = 0
     for step in range(epochs):
+        #Die Explorationsrate (Wahrscheinlichkeit, zufällig zu wählen)
         epsilon = max(0.01, 1 - step / epochs)
         action = policy_fn(epsilon)
         reward = env.step(action)
