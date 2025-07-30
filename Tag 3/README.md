@@ -1,3 +1,4 @@
+
 # 🧠 Reinforcement Learning Woche 1 – Einführung
 
 ---
@@ -103,4 +104,7 @@ Beim Bootstrapping:
 ## ✅ Übungsvorschlag
 
 Implementiere ein 4x4-GridWorld mit Policy Iteration. Erstelle eine Heatmap der Wertefunktion und zeichne die aktuelle Policy ein.
+
+=======
+# Tag 3 Experimente
 
