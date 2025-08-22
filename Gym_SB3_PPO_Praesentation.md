@@ -60,19 +60,7 @@ register(id="Pickomino-v0", entry_point="pickomino.envs:PickominoEnv")
 
 ---
 
-## 6) Observation & Action Spaces 
-- **Obs:** Box (Vektor) oder 1‑Level‑Dict. Keine Dict-in-Dict/Tuple-in-Dict (sonst vorher flatten).
-- **Actions:** SB3 unterstützt `Discrete`, `MultiDiscrete`, `MultiBinary`, `Box`. Tuple-Actions vorher konvertieren.
-- **Step/Reset geben Daten zurück** (np.ndarray/int/dict), niemals Spaces.
 
----
-
-## 7) Wrapper-Pipeline (robust)
-- `TupleToMultiDiscrete` → `Tuple(Discrete,...)` → `MultiDiscrete` für SB3; Rückkonvertierung beim `step`.
-- `sanitize_obs(...)` + `SafeFlattenToBox` → repariert Typ-/Range-/Shape-Fehler und flatten zu 1D‑Box.
-- `Monitor` → Episoden-Return und -Länge für Logger/TensorBoard.
-
----
 
 ## 8) Methode
 ```
