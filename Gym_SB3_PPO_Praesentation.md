@@ -75,7 +75,7 @@ register(id="Pickomino-v0", entry_point="pickomino.envs:PickominoEnv")
 ---
 
 ## 8) Methode
-```python
+```
 ValidateObs._check(obs, space, path="")
 Prüft rekursiv, ob Observation (obs) zur Space-Beschreibung passt (Typ, Länge, Keys). Bricht mit klarer Fehlermeldung ab, wenn etwas nicht stimmt.
 
