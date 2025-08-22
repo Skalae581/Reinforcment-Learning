@@ -10,7 +10,7 @@
 ## 2) Agenda
 1. Warum Registrierung?
 2. Projektstruktur
-3. Registrierungscode
+3. Registrierungscode wurde entfernt/ Zeitlimit
 4. Observation/Action Spaces – Do’s & Don’ts
 5. Wrapper-Pipeline (robuste Variante)
 6. PPO-Setup & Training
@@ -74,15 +74,49 @@ register(id="Pickomino-v0", entry_point="pickomino.envs:PickominoEnv")
 
 ---
 
-## 8) PPO-Setup & Training (Ausschnitt)
+## 8) Methode
 ```python
-env = make_env(0)
-from stable_baselines3.common.env_checker import check_env
-check_env(env, warn=True)
+ValidateObs._check(obs, space, path="")
+Prüft rekursiv, ob Observation (obs) zur Space-Beschreibung passt (Typ, Länge, Keys). Bricht mit klarer Fehlermeldung ab, wenn etwas nicht stimmt.
 
-from stable_baselines3 import PPO
-model = PPO("MlpPolicy", env, tensorboard_log="runs", verbose=1)
-model.learn(10_000, tb_log_name="PickominoPPO")
+ValidateObs.reset(**kwargs)
+Ruft env.reset(), holt die erste Observation und lässt sie von _check validieren. Gibt (obs, info) zurück.
+
+ValidateObs.step(action)
+Führt env.step(action) aus, validiert die neue Observation mit _check, gibt das Standard-Tuple zurück.
+
+TupleToMultiDiscrete.__init__(env)
+Wenn die Env Tuple-Actions aus Discrete-Teilen hat, ersetzt den Action-Space durch MultiDiscrete([...]); sonst passthrough.
+
+TupleToMultiDiscrete.action(a)
+Konvertiert die von SB3 kommende MultiDiscrete-Aktion (Array) zurück in das Tupel von ints für die Env.
+
+zeros_from_space(sp)
+Erzeugt Null-Daten in der richtigen Form für jeden Space-Typ (Box, Discrete, Multi*, Dict, Tuple). Nützlich als Fallback.
+
+_sanitize_discrete(space, obs)
+Macht aus obs einen gültigen Discrete-Wert (int) und mappt Out-of-Range per Modulo in den erlaubten Bereich.
+
+_sanitize_multidiscrete(space, obs)
+Formt obs zu einem int-Array der richtigen Länge und projiziert jede Komponente in [0, n_i-1].
+
+_sanitize_multibinary(space, obs)
+Formt obs zu einem 0/1-Array der richtigen Länge (alles Nicht-Null wird zu 1).
+
+sanitize_obs(space, obs)
+Zentraler Reparierer: Ersetzt versehentliche Space-Objekte durch Null-Daten, korrigiert Typ/Range/Shape rekursiv für Dict/Tuple/Box/Discrete/Multi*.
+
+SafeFlattenToBox.__init__(env)
+Merkt sich das original observation_space und setzt den neuen Space auf die geflattete 1D-Box (flatten_space).
+
+SafeFlattenToBox.observation(obs)
+Wendet sanitize_obs an und macht daraus mit flatten(...) einen flachen Vektor für das MLP.
+
+TBCallback.__init__(verbose=0)
+Initialisiert einen einfachen TensorBoard-Callback und setzt einen Update-Zähler auf 0.
+
+TBCallback._on_step()
+Läuft bei jedem Trainings-Schritt: loggt die aktuelle Lernrate (opt/lr) und einen Update-Zähler (train/updates) nach TensorBoard. Rückgabe True = Training weiter.
 ```
 
 ---
