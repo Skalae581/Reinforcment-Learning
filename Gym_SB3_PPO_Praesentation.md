@@ -103,46 +103,15 @@ Im Browser öffnen: `http://localhost:6006/`.
 
 ---
 
-## 11) Minimal‑Skeleton einer sauberen Env
-```python
-import gymnasium as gym
-from gymnasium import spaces
-import numpy as np
 
-class PickominoEnv(gym.Env):
-    metadata = {"render_modes": []}
-    def __init__(self):
-        self.observation_space = spaces.Box(low=-1, high=1, shape=(10,), dtype=np.float32)
-        self.action_space = spaces.MultiDiscrete([6, 2])  # Beispiel
-        self.state = None
-
-    def _get_obs(self):
-        return np.asarray(self.state, dtype=np.float32)
-
-    def reset(self, *, seed=None, options=None):
-        super().reset(seed=seed)
-        self.state = np.zeros(10, dtype=np.float32)
-        return self._get_obs(), {}
-
-    def step(self, action):
-        reward = 0.0
-        terminated = False
-        truncated = False
-        info = {}
-        self.state = np.clip(self.state + 0.01, -1, 1)
-        return self._get_obs(), float(reward), terminated, truncated, info
-```
-
----
-
-## 12) Nächste Schritte
+## 11) Nächste Schritte
 - Falls Bilder: 1‑Level‑Dict (`{"image": Box(H,W,C), "state": Box(n,)}`) + `MultiInputPolicy` statt Flatten.
 - `EvalCallback` einsetzen (rauschärmere Metriken), Lernrate per Schedule feintunen.
 - Optional: `make_vec_env(..., n_envs>1)` für Parallelisierung.
 
 ---
 
-## 13) Rollout‑Kurven – Auswertung (deine TB‑Screenshots)
+## 12) Rollout‑Kurven – Auswertung (deine TB‑Screenshots)
 **ep_len_mean (links)**  
 - Start ~1.5, ab ~20k steiler Anstieg, Plateau ~3.7–4.0 → Episoden werden im Mittel deutlich länger.
 
@@ -170,7 +139,7 @@ model.learn(200_000, tb_log_name="PickominoPPO", callback=eval_cb)
 
 ---
 
-## 14) Komplettes Trainings‑Snippet (kompakt)
+## 13) Komplettes Trainings‑Snippet (kompakt)
 ```python
 env = make_env(0)
 check_env(env, warn=True)
